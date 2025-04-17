@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decentralized Marketing Platform</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      :root {
+        --primary-color: #6c5ce7;
+        --secondary-color: #00cec9;
+        --accent-color: #ff7675;
+        --dark-color: #2d3436;
+        --light-color: #f5f6fa;
+      }
+
+      body {
+        font-family: "Space Grotesk", sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: var(--light-color);
+        min-height: 100vh;
+      }
+
+      .navbar {
+        background: rgba(26, 26, 46, 0.8);
+        backdrop-filter: blur(10px);
+      }
+
+      .hero-section {
+        padding: 100px 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="%236C5CE7" opacity="0.1"/></svg>');
+        background-size: 30px 30px;
+      }
+
+      .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+      }
+
+      .web3-button {
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border: none;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .web3-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+      }
+
+      .blockchain-icon {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: var(--secondary-color);
+      }
+
+      .feature-card {
+        padding: 30px;
+        text-align: center;
+      }
+
+      .campaign-card {
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .campaign-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .stats-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 10px;
+      }
+
+      .stats-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+      }
+
+      .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--light-color);
+        border-radius: 10px;
+      }
+
+      .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
+      }
+
+      .wallet-connected {
+        background: rgba(0, 206, 201, 0.1);
+        border: 1px solid var(--secondary-color);
+        border-radius: 10px;
+        padding: 10px 20px;
+      }
+
+      .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-cubes me-2"></i>DMarketing
+        </a>
+        <div class="d-flex align-items-center">
+          <div id="ethPrice" class="me-3 text-light"></div>
+          <button id="connectWallet" class="btn web3-button">
+            <i class="fas fa-sign-in-alt me-2"></i>Login with MetaMask
+          </button>
+          <div id="userLoggedIn" class="ms-3 text-light d-none">
+            <i class="fas fa-user-circle me-2"></i
+            ><span id="userAddress"></span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div id="particles-js" class="particles"></div>
+
+    <section class="hero-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <h1 class="hero-title mb-4">
+              Decentralized Marketing for the Future
+            </h1>
+            <p class="lead mb-4">
+              Create, manage, and participate in marketing campaigns on the
+              blockchain. Transparent, secure, and efficient.
+            </p>
+            <button class="btn web3-button" onclick="scrollToCreate()">
+              <i class="fas fa-rocket me-2"></i>Get Started
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2091/2091663.png"
+              alt="Blockchain Marketing"
+              class="img-fluid"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card feature-card">
+              <i class="fas fa-shield-alt blockchain-icon"></i>
+              <h3>Secure & Transparent</h3>
+              <p>
+                All transactions and campaigns are recorded on the blockchain
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card feature-card">
+              <i class="fas fa-chart-line blockchain-icon"></i>
+              <h3>Smart Analytics</h3>
+              <p>Real-time campaign performance tracking and analytics</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card feature-card">
+              <i class="fas fa-hand-holding-usd blockchain-icon"></i>
+              <h3>Instant Rewards</h3>
+              <p>Automated reward distribution through smart contracts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="create-campaign" class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-5">Create Your Campaign</h2>
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-body">
+                <form id="createCampaignForm">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="campaignTitle" class="form-label"
+                        >Campaign Title</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="campaignTitle"
+                        placeholder="Enter campaign title"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="campaignBudget" class="form-label"
+                        >Budget (ETH)</label
+                      >
+                      <input
+                        type="number"
+                        step="0.0001"
+                        class="form-control"
+                        id="campaignBudget"
+                        placeholder="Enter budget in ETH"
+                        required
+                      />
+                      <small
+                        id="budgetUsd"
+                        class="form-text text-muted"
+                      ></small>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="campaignDescription" class="form-label"
+                      >Description</label
+                    >
+                    <div class="input-group">
+                      <textarea
+                        class="form-control"
+                        id="campaignDescription"
+                        rows="3"
+                        placeholder="Describe your campaign"
+                        required
+                      ></textarea>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-light"
+                        id="generateAIDescription"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Generate with Gemini AI"
+                      >
+                        <i class="fas fa-robot"></i> Generate with Gemini
+                      </button>
+                    </div>
+                    <div id="aiGeneratorControls" class="mt-2 d-none">
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="aiPrompt"
+                          placeholder="Enter campaign topic (e.g., 'coffee brand promotion')"
+                        />
+                        <button
+                          class="btn btn-outline-light"
+                          type="button"
+                          id="submitAIPrompt"
+                        >
+                          Generate with Gemini
+                        </button>
+                      </div>
+                      <div
+                        class="spinner-border text-light mt-2 d-none"
+                        id="aiSpinner"
+                        role="status"
+                      >
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="campaignReward" class="form-label"
+                        >Reward (ETH)</label
+                      >
+                      <input
+                        type="number"
+                        step="0.0001"
+                        class="form-control"
+                        id="campaignReward"
+                        placeholder="Enter reward amount"
+                        required
+                      />
+                      <small
+                        id="rewardUsd"
+                        class="form-text text-muted"
+                      ></small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="campaignDuration" class="form-label"
+                        >Duration (days)</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="campaignDuration"
+                        placeholder="Enter duration in days"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <button type="submit" class="btn web3-button">
+                      <i class="fas fa-plus-circle me-2"></i>Create Campaign
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="campaigns" class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-5">Active Campaigns</h2>
+        <div id="campaignsList" class="row"></div>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#6C5CE7" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: false },
+          size: { value: 3, random: true },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#6C5CE7",
+            opacity: 0.4,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 2,
+            direction: "none",
+            random: false,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "grab" },
+            onclick: { enable: true, mode: "push" },
+            resize: true,
+          },
+        },
+        retina_detect: true,
+      });
+
+      function scrollToCreate() {
+        document
+          .getElementById("create-campaign")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
